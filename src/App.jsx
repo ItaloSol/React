@@ -1,20 +1,28 @@
 import React from 'react';
-
-
-// Replique a interface como a apresentada na aula
-// Utilize a array abaixo para mostrar os produtos
-// Quebre em componentes o que precisar ser reutilizado
-// Dica: const { pathname } = window.location; (puxa o caminho do URL)
-const produtos = [
-  { nome: 'Notebook', propriedades: ['16gb ram', '512gb'] },
-  { nome: 'Smartphone', propriedades: ['2gb ram', '128gb'] },
-];
+import Produto from './Produto';
 
 const App = () => {
+  const [dados, setDados] = React.useState(null);
+  const [carregando, setCarregando] = React.useState(null);
+
+  async function handleClick(event) {
+    setCarregando(true);
+    const response = await fetch(
+      `https://ranekapi.origamid.dev/json/api/produto/${event.target.innerText}`,
+    );
+    const json = await response.json();
+    setDados(json);
+    setCarregando(false);
+  }
+
   return (
-    <div>
-     
-    </div>
+    <>
+      <button onClick={handleClick}>smartphone</button>
+      <button onClick={handleClick}>tablet</button>
+      <button onClick={handleClick}>notebook</button>
+      {carregando && <p>Carregando...</p>}
+      {!carregando && dados && <Produto dados={dados} />}
+    </>
   );
 };
 
